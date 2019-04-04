@@ -1,6 +1,8 @@
 <?php
 require "db.php";
-
+session_start();
+error_reporting(-1);
+ini_set('display_errors', 'On');
 if(isset($_POST["submit"]))  
 {  
 	if(empty($_POST["email"]))  
@@ -15,15 +17,24 @@ if(isset($_POST["submit"]))
 		$email = mysqli_real_escape_string($con, $_POST["email"]);  
 		$password = mysqli_real_escape_string($con, $_POST["password"]); 
 
+		$check=mysqli_query($con,"SELECT * FROM users WHERE uEmail = '$email' AND uPassword = '$password'")  or die(mysqli_error($con));
+		while($row = mysqli_fetch_array($check)){
 
-
-		$query = "SELECT * FROM users WHERE uEmail = '$email' AND uPassword = '$password'";  
-		$result = mysqli_query($con, $query);
-		if(mysqli_num_rows($result) > 0)  
-		{     
+			$user_role = $row['role'];
+			$uId = $row['uId'];
+			
+		}
+		if($user_role=="user"){
+			$_SESSION['uRole'] = "user";
 			$_SESSION['uEmail'] = $email;
-			header("location:index.php");  
-		}  
+			$_SESSION['uId'] = $uId;
+			header("location:index.php"); 
+		} else if ($user_role=="admin") {
+			$_SESSION['uRole'] = "admin";
+			$_SESSION['uEmail'] = $email;
+			$_SESSION['uId'] = $uId;
+			header("location:../admin/dashboard.php");
+		} 
 		else  
 		{  
 			echo '<script>alert("Wrong User Details")</script>';  

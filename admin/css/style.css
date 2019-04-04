@@ -1,0 +1,47 @@
+.mdc-drawer-app-content {
+	flex: auto;
+	overflow: auto;
+}
+
+.main-content {
+	overflow: auto;
+	height: 100%;
+}
+
+.app-bar {
+	position: absolute;
+}
+
+.userGrid{
+	margin-top: 70px !important;
+}
+
+.contentCard{
+	padding-left: 15px;
+}
+
+.blockButton{
+	background-color: blue !important;
+	color: #fff !important;
+}
+
+.unblockButton{
+	background-color: red !important;
+	color: #fff !important;
+}
+
+.userProfilePic img{
+	border-radius: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+
+}
+
+a{
+	text-decoration: none !important;
+}
+
+.chooseSong{
+	width: 50%;
+}
