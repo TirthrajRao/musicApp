@@ -1,4 +1,4 @@
-Music app in php
+	Music app in php
 
 
 Users
@@ -97,7 +97,7 @@ Screens
 		•	Add display name ( optional )
 
 
-	4.	All songs + search..... (DATE: 6/4, 8/4 , 9/4 , 10/4 and 11/4)
+	4.	All songs + search..... 
 		•	Search by name
 		•	Artist 
 		•	Category 
@@ -167,29 +167,29 @@ Files
 	
 	2	****************Users**********************
 	
-		•	login.php
-		•	userDashboard.php
-		•	Categories section 
-		•	Search song or playlist 
-		•	Results would always be in 2 parts 
-	
-		.........Songs.............
-	
-		•	Playlists
-	
-		.........addUser.php ( sign up )...........
+				•	login.php
+				•	userDashboard.php
+				•	Categories section 
+				•	Search song or playlist 
+				•	Results would always be in 2 parts 
+			
+				.........Songs.............
+			
+				•	Playlists
+			
+				.........addUser.php ( sign up )...........
 
-		• sideNav.php
-		• banUserById.php
-		• editUser.php
-		• viewUser.php ( profile page )
+				• sideNav.php
+				• banUserById.php
+				• editUser.php
+				• viewUser.php ( profile page )
 
-		..........Playlists...........
+				..........Playlists...........
 
-	
-		•	addPlaylist.php
-		•	editPlaylist.php
-		•	viewPlaylist.php
+			
+				•	addPlaylist.php
+				•	editPlaylist.php
+				•	viewPlaylist.php
 	
 	3      *******************	Admin **************************
 	
@@ -198,16 +198,16 @@ Files
 		•	List of recently created playlists ( last 10 ) with username of creator
 		•	List of newly signed up users ( last 10 )
 		•	Music
-		•	Musicplayer.php ( play area )
-		•	It plays all tracks in queue. If single song or playlist is played, it should be passed to it in the form of array of 				song ids.
-		•	It should play all the songs one by one in the array.
-		•	It should have the music player controls.
-		•	It should display all details of the song ( title, image, category(s), description)
+			•	Musicplayer.php ( play area )
+			•	It plays all tracks in queue. If single song or playlist is played, it should be passed to it in the form of array 		of 	song ids.
+			•	It should play all the songs one by one in the array.
+			•	It should have the music player controls.
+			•	It should display all details of the song ( title, image, category(s), description)
 		•	Category
-		•	viewAllCategories.php
-		•	viewCategory.php (All songs of category )
-		•	All categories of playlists 
-		•	addCategory.php ( modal )
-		•	editCategory.php ( modal )
-		•	deleteCategory.php
+			•	viewAllCategories.php
+			•	viewCategory.php (All songs of category)
+			•	All categories of playlists 
+			•	addCategory.php ( modal )
+			•	editCategory.php ( modal )
+			•	deleteCategory.php
 

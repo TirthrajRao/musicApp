@@ -1,29 +1,46 @@
 <?php
 session_start();
-error_reporting(-1);
-ini_set('display_errors', 'On');
 if($_SESSION['uRole'] == "admin"){
-}else{
+}
+else {
 	header("location: ../user/login.php");
 }
 ?>
 
 <?php
-include "db.php";
-if(isset($_GET['deleteSong'])){
-	$the_song_id = $_GET['deleteSong'];
+require "db.php";
+error_reporting(-1);
+ini_set('display_errors', 'On');
+if(isset($_POST['submit'])){
+	$cName = $_POST['cName'];
+	$cDescription = $_POST['cDescription'];
+	
+	$extsAllowed = array( 'jpg', 'jpeg', 'png', 'gif' );
+	$extUpload = strtolower( substr( strrchr($_FILES['cImage']['name'], '.') ,1) ) ;
+	
+	if (in_array($extUpload, $extsAllowed) ) { 
 
-	$query = "DELETE FROM songs WHERE sId = {$the_song_id}";
+		$name = "categoryImages/{$_FILES['cImage']['name']}";
+		$result = move_uploaded_file($_FILES['cImage']['tmp_name'], $name);
+
+		mysqli_query($con,"INSERT INTO category(cName, cDescription, cImage) VALUES ('$cName', '$cDescription','$name')") or die(mysqli_error($con));
+		echo "<script>alert('Category added Successfully!')
+
+		</script>";
+	}
+}
+
+if(isset($_GET['deleteCategory'])){
+	$the_category_id = $_GET['deleteCategory'];
+
+	$query = "DELETE FROM category WHERE cId = {$the_category_id}";
 	$delete_query = mysqli_query($con, $query) or die("Delete Error!" . mysqli_error($con));
-	header("Location: allSongs.php");
+	header("Location: category.php");
 }
+
+
 ?>
 
-<?php
-if(isset($_GET['addToCategory'])){
-	$song_id = $_GET['addToCategory'];
-}
-?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,18 +50,15 @@ if(isset($_GET['addToCategory'])){
 	<link rel="stylesheet" type="text/css" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="./css/style.css">
+
 	<style type="text/css">
 		.mdc-layout-grid{
-			padding-left: 0px;
-		}
-
-		#spanHeading{
-			font-weight: bolder;
+			padding-top: 0;
 		}
 	</style>
 </head>
-
 <body>
+
 
 	<aside class="mdc-drawer mdc-drawer--modal">
 		<div class="mdc-drawer__content">
@@ -82,99 +96,22 @@ if(isset($_GET['addToCategory'])){
 			<div class="mdc-top-app-bar__row">
 				<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
 					<a href="#" class="demo-menu material-icons mdc-top-app-bar__navigation-icon">menu</a>
-					<span class="mdc-top-app-bar__title">Signal Play</span>
+					<span class="mdc-top-app-bar__title"> Signal Play</span>
 				</section>
 			</div>
 		</header>
-		<main class="main-content" id="main-content" style="margin-top: 50px;">
+		<main class="main-content" id="main-content">
 			<div class="mdc-top-app-bar--fixed-adjust">
-				<h1>All Songs</h1>
 				<div class="mdc-layout-grid">
 					<div class="mdc-layout-grid__inner">
-						<?php
-						$query = "SELECT * FROM songs";
-						$select_songs= mysqli_query($con,$query);
-						while($row = mysqli_fetch_assoc($select_songs)){
-							$sId = $row['sId'];
-							$uId = $row['uId'];
-							$sSong = $row['sSong'];
-							$sTitle = $row['sTitle'];
-							$sArtist = $row['sArtist'];
-							$sImage = $row['sImage'];
-							$sSource = $row['sSource'];
-							$sDescription = $row['sDescription'];
-							$sDuration = $row['sDuration'];
-
-							
-							?>
-
-							<div class="mdc-layout-grid__cell--span-4">
-								<div class="mdc-card demo-card">
-									<div class="mdc-card__primary-action demo-card__primary-action contentCard" tabindex="0">
-										<div class="mdc-card__media mdc-card__media--8-3 demo-card__media userProfilePic">
-											<?php
-											echo "<a href='allSongs.php?deleteSong=$sId' onClick=\"javascript: return confirm('Are you sure you want to delete?');\"><button class='mdc-button mdc-card__action mdc-card__action--button blockButton ' style='background-color:#fb535b!important;font-size:10px '>Delete</button></a>";
-											?>
-											<?php
-											echo "<a href='addSongToCategory.php?addToCategory=$sId'><button class='mdc-button mdc-card__action mdc-card__action--button blockButton ' style='background-color:black!important;font-size:10px' onCLick='dialog.open()''>Update Category</button></a>";
-											?>
-											<img src="<?php echo $sImage; ?>" width="150px" height="150px">
-										</div>
-										<div class="demo-card__primary">
-											<h2 class="demo-card__title mdc-typography mdc-typography--headline6"><?php echo $sTitle . " " . "by " . $sArtist ;?></h2>
-											<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2"><span id="spanHeading">Source:</span><?php echo $sSource; ?></h3>
-											<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2"><span id="spanHeading">Description:</span> <?php echo $sDescription; ?></h3>
-
-											<?php 
-											$query = "SELECT * FROM catSongs WHERE sId = $sId";
-											$select_song_category= mysqli_query($con,$query);
-											$checkrows=mysqli_num_rows($select_song_category);
-
-											if($checkrows == 0){
-														?>
-
-														<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2"><span id="spanHeading">Category:</span> None</h3>
-														<?php
-											}else{
-												while($row = mysqli_fetch_assoc($select_song_category)){
-													$cId = $row['cId'];
-
-													$query = "SELECT * FROM category WHERE cId = $cId";
-													$select_song_category_name= mysqli_query($con,$query);
-													while($row = mysqli_fetch_assoc($select_song_category_name)){
-														$cName = $row['cName'];
-														?>
-
-														<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2"><span id="spanHeading">Category:</span> <?php echo $cName; ?></h3>
-														<?php
-													}
-												}
-											}
-											?>
-										</div>
-									</div>
-									<div class="mdc-card__actions">
-										<div class="mdc-card__action-buttons actionBlock">
-											<audio src="<?php echo $sSong; ?>"></audio>
-											<audio controls style="padding-right: 5px;">
-												<source id="audioSTARTMP3" src="<?php echo $sSong; ?>" type="audio/mpeg">
-												</audio>
-
-											</div>
-											<?php
-											echo "<a href='editSong.php?editSong=$sId'><button class='mdc-button mdc-card__action mdc-card__action--button blockButton'>Edit</button></a>";
-											?>
-										</div>
-									</div>
-								</div>
-								<?php
-							}
-							?>	
+						<div class="mdc-layout-grid__cell--span-12">
+							<button class="mdc-button mdc-button--raised" onCLick="dialog.open()"  style="margin-top: 30px; background-color: black">
+								<span class="mdc-button__label">Add Category</span>
+							</button>
 						</div>
 					</div>
 				</div>
-
-				<!-- modal category ************** -->
+				
 
 				<div class="mdc-dialog"
 				role="alertdialog"
@@ -262,23 +199,65 @@ if(isset($_GET['addToCategory'])){
 
 				</div>
 			</div>
-			<!-- modal category end ************** -->
-		</main>
-	</div>
+			<div class="mdc-layout-grid">
+				<div class="mdc-layout-grid__inner">
+					<div class="mdc-layout-grid__cell--span-12">
+						<h2>All Categories</h2>
+					</div>
+				</div>
+			</div>
+			<div class="mdc-layout-grid">
+				<div class="mdc-layout-grid__inner">
+					<?php
+					$query = "SELECT * FROM category WHERE cId != 6";
+					$select_categories= mysqli_query($con,$query);
+					while($row = mysqli_fetch_assoc($select_categories)){
+						$cId = $row['cId'];
+						$cName = $row['cName'];
+						$cDescription = $row['cDescription'];
+						$cImage = $row['cImage'];	
+						?>
 
+						<div class="mdc-layout-grid__cell--span-4">
+							<div class="mdc-card demo-card">
+								<div class="mdc-card__primary-action demo-card__primary-action contentCard" tabindex="0">
+									<div class="mdc-card__media mdc-card__media--8-3 demo-card__media userProfilePic">
+										<?php
+										echo "<a href='category.php?deleteCategory=$cId' onClick=\"javascript: return confirm('Are you sure you want to delete?');\"><button class='mdc-button mdc-card__action mdc-card__action--button blockButton ' style='background-color:red!important;'>Delete</button></a>";
+										?>
+										<img src="<?php echo $cImage; ?>" width="150px" height="150px" style="border-radius: 50%">
+									</div>
+									<div class="demo-card__primary">
+										<h2 class="demo-card__title mdc-typography mdc-typography--headline6">
+											<?php echo $cName ;?>
+
+										</h2>
+									</div>
+									<div class="demo-card__secondary mdc-typography mdc-typography--body2">
+										<span style="font-weight: bolder;">Description:</span> <?php echo $cDescription; ?>
+									</div>
+								</div>
+								<div class="mdc-card__actions" pull="right">
+									<?php
+									echo "<a href='viewDetailsCategory.php?categoryDetail=$cId'><button class='mdc-button mdc-card__action mdc-card__action--button' style='background-color: #fb535b;color:white;margin-right:5px;'>View Details</button></a>";
+									?>
+									<?php
+									echo "<a href='editCategory.php?editCategory=$cId' style='text-decoration: none'><button class='mdc-button mdc-card__action mdc-card__action--button' style='background-color: black;color:white'>Edit</button></a>";
+									?>
+								</div>
+							</div>
+						</div>
+						<?php
+					}
+					?>
+				</div>
+			</div>
+		</div>
+	</main>
 	<script type="text/javascript" src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 
 	<script type="text/javascript">
 		const dialog = new mdc.dialog.MDCDialog(document.querySelector('.mdc-dialog'));
-
-		document.addEventListener('play', function(e){
-			var audios = document.getElementsByTagName('audio');
-			for(var i = 0, len = audios.length; i < len;i++){
-				if(audios[i] != e.target){
-					audios[i].pause();
-				}
-			}
-		}, true);
 
 		const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.getElementById('app-bar'))
 		const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'))

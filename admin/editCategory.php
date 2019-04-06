@@ -9,44 +9,60 @@ if($_SESSION['uRole'] == "admin"){
 ?>
 
 <?php
+if(isset($_GET['editCategory'])){
+	$the_category_id = $_GET['editCategory'];
+}
+
+
 include "db.php";
-if(isset($_POST['submit']))
-{
-	$songImage = $_FILES['sImage']['name'];
-	$sTitle = $_POST['sTitle'];
-	$sArtist = $_POST['sArtist'];
-	$sDescription = $_POST['sDescription'];
-	$sSource = $_POST['sSource'];
-	$sDuration = $_POST['sDuration'];
-	$uId = $_SESSION['uId'];
+$query = "SELECT * FROM category WHERE cId=$the_category_id";
+$select_category= mysqli_query($con,$query);
+while($row = mysqli_fetch_assoc($select_category)){
+	$cName = $row['cName'];
+	$cDescription = $row['cDescription'];
+	$cImage1= $row['cImage'];
+}
 
-	if($_FILES['addSong']['type']=='audio/mpeg' || $_FILES['addSong']['type']=='audio/mpeg3' || $_FILES['addSong']['type']=='audio/x-mpeg3' || $_FILES['addSong']['type']=='audio/mp3' || $_FILES['addSong']['type']=='audio/x-wav' || $_FILES['addSong']['type']=='audio/wav')
-	{ 
-		$new_file_name=$_FILES['addSong']['name'];
-		$target_path = "songs/".$new_file_name;
-		if(move_uploaded_file($_FILES['addSong']['tmp_name'], $target_path)) {
-		}
-	}
 
-	$extsAllowed = array( 'jpg', 'jpeg', 'png', 'gif' );
-	$extUpload = strtolower( substr( strrchr($_FILES['sImage']['name'], '.') ,1) ) ;
+if(isset($_POST['submit'])){
+
+
+	$cImage = $_FILES['cImage']['name'];
+	$cName = $_POST['cName'];
+	$cDescription = $_POST['cDescription'];
+
+	$extsAllowed = array( 'jpg', 'jpeg', 'png', 'gif');
+	$extUpload = strtolower( substr( strrchr($_FILES['cImage']['name'], '.') ,1) ) ;
 	
 	if (in_array($extUpload, $extsAllowed) ) { 
 
-		$name1 = "songImages/{$_FILES['sImage']['name']}";
-		$result = move_uploaded_file($_FILES['sImage']['tmp_name'], $name1);
+		$name1 = "categoryImages/{$_FILES['cImage']['name']}";
+		$result = move_uploaded_file($_FILES['cImage']['tmp_name'], $name1);
 
-		mysqli_query($con,"INSERT INTO songs(uId, sSong, sTitle, sArtist, sImage, sSource, sDescription, sDuration) VALUES ('$uId', '$target_path' ,'$sTitle','$sArtist','$name1','$sSource', '$sDescription','$sDuration')") or die(mysqli_error($con));
-		echo "<script>alert('Song added Successfully!')
+		mysqli_query($con,"UPDATE category SET  cImage='$name1', cName='$cName', cDescription='$cDescription' WHERE cId='$the_category_id' ") or die(mysqli_error($con));
+		echo "<script>alert('category updated Successfully!')
 
 		</script>";
-	}
 
-	
+		header("Location: category.php");
+	}else{
+
+		$name1 = "$cImage1";
+		echo $name1;
+		$result = move_uploaded_file($cImage, $name1);
+
+		mysqli_query($con,"UPDATE category SET  cImage='$name1', cName='$cName', cDescription='$cDescription' WHERE cId='$the_category_id' ") or die(mysqli_error($con));
+		echo "<script>alert('category updated Successfully!')
+
+		</script>";
+
+		header("Location: category.php");
+	}
 	
 }
 
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -101,7 +117,7 @@ if(isset($_POST['submit']))
 			<div class="mdc-top-app-bar__row">
 				<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
 					<a href="#" class="demo-menu material-icons mdc-top-app-bar__navigation-icon">menu</a>
-					<span class="mdc-top-app-bar__title">Signal Play</span>
+					<span class="mdc-top-app-bar__title">Signal play</span>
 				</section>
 			</div>
 		</header>
@@ -110,28 +126,17 @@ if(isset($_POST['submit']))
 				<div class="mdc-layout-grid">
 					<div class="mdc-layout-grid__inner">
 						<div class="mdc-layout-grid__cell--span-12" align="center">
-							<h1>Add Song</h1>
+							<h1>Edit Category</h1>
 						</div>
 					</div>	
 				</div>
 				<form method="POST" enctype="multipart/form-data">
-					<div class="mdc-layout-grid">
-						<div class="mdc-layout-grid__inner">
-							<div class="mdc-layout-grid__cell--span-12" align="center">
-								Add Song: 
-								<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
-
-									<input type="file" name="addSong" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Song Image" accept="audio/*;capture=microphone">
-								</div>
-							</div>	
-						</div>
-					</div>
 
 					<div class="mdc-layout-grid">
 						<div class="mdc-layout-grid__inner">
 							<div class="mdc-layout-grid__cell--span-12" align="center">
 								<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
-									<input type="text" name="sTitle" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Song Title">
+									<input type="text" value="<?php echo $cName; ?>" name="cName" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Category Name">
 									<div class="mdc-notched-outline">
 										<div class="mdc-notched-outline__leading"></div>
 										<div class="mdc-notched-outline__trailing"></div>
@@ -145,7 +150,7 @@ if(isset($_POST['submit']))
 						<div class="mdc-layout-grid__inner">
 							<div class="mdc-layout-grid__cell--span-12" align="center">
 								<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
-									<input type="text" name="sArtist" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Song Artist">
+									<input type="text" value="<?php echo $cDescription; ?>" name="cDescription" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Category Description">
 									<div class="mdc-notched-outline">
 										<div class="mdc-notched-outline__leading"></div>
 										<div class="mdc-notched-outline__trailing"></div>
@@ -158,43 +163,10 @@ if(isset($_POST['submit']))
 					<div class="mdc-layout-grid">
 						<div class="mdc-layout-grid__inner">
 							<div class="mdc-layout-grid__cell--span-12" align="center">
-								Add Image: 
+								<img src="<?php echo $cImage1; ?>" height="100px" width="100px" style="border-radius: 50%">
+								Add Image:
 								<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
-									<input type="file" name="sImage" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Song Image" accept="image/*;capture=camera">
-								</div>
-							</div>	
-						</div>
-					</div>
-
-					<div class="mdc-layout-grid">
-						<div class="mdc-layout-grid__inner">
-							<div class="mdc-layout-grid__cell--span-12" align="center">
-								<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
-									<input type="text" name="sDescription" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Song Description">
-									<div class="mdc-notched-outline">
-										<div class="mdc-notched-outline__leading"></div>
-										<div class="mdc-notched-outline__trailing"></div>
-									</div>
-								</div>
-							</div>
-
-							<div class="mdc-layout-grid__cell--span-12" align="center">
-								<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
-									<input type="text" name="sSource" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Song Source">
-									<div class="mdc-notched-outline">
-										<div class="mdc-notched-outline__leading"></div>
-										<div class="mdc-notched-outline__trailing"></div>
-									</div>
-								</div>
-							</div>
-
-							<div class="mdc-layout-grid__cell--span-12" align="center">
-								<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
-									<input type="text" name="sDuration" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Song Duration">
-									<div class="mdc-notched-outline">
-										<div class="mdc-notched-outline__leading"></div>
-										<div class="mdc-notched-outline__trailing"></div>
-									</div>
+									<input type="file" name="cImage" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Song Image" accept="image/*;capture=camera">
 								</div>
 							</div>	
 						</div>
@@ -204,7 +176,7 @@ if(isset($_POST['submit']))
 						<div class="mdc-layout-grid__inner">
 							<div class="mdc-layout-grid__cell--span-12" align="center">
 								<button type="submit" class="mdc-button mdc-button--raised" name="submit">
-									<span class="mdc-button__label">Add Song</span>
+									<span class="mdc-button__label">Edit Song</span>
 								</button>
 							</div>	
 						</div>
@@ -217,6 +189,7 @@ if(isset($_POST['submit']))
 	<script type="text/javascript" src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 
 	<script type="text/javascript">
+
 		const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.getElementById('app-bar'))
 		const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'))
 

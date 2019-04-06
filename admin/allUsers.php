@@ -28,16 +28,20 @@ if($_SESSION['uRole'] == "admin"){
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">inbox</i>
 					<span class="mdc-list-item__text">Dashboard</span>
 				</a>
-				<a class="mdc-list-item" href="allUsers.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
-					<span class="mdc-list-item__text">All Users</span>
-				</a>
 				<a class="mdc-list-item" href="addSong.php">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
 					<span class="mdc-list-item__text">Add Songs</span>
 				</a>
-				<a class="mdc-list-item" href="allSongs.php">
+				<a class="mdc-list-item" href="category.php">
+					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
+					<span class="mdc-list-item__text">Category</span>
+				</a>
+				<a class="mdc-list-item" href="allUsers.php">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
+					<span class="mdc-list-item__text">All Users</span>
+				</a>
+				<a class="mdc-list-item" href="allSongs.php">
+					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
 					<span class="mdc-list-item__text">All Songs</span>
 				</a>
 				<a class="mdc-list-item" href="logout.php">
@@ -59,6 +63,13 @@ if($_SESSION['uRole'] == "admin"){
 		</header>
 		<main class="main-content" id="main-content">
 			<div class="mdc-top-app-bar--fixed-adjust">
+				<div class="mdc-layout-grid">
+					<div class="mdc-layout-grid__inner">
+						<div class="mdc-layout-grid__cell--span-3">
+							<h2>All Users:</h2>
+						</div>
+					</div>
+				</div>
 				<div class="mdc-layout-grid userGrid">
 					<div class="mdc-layout-grid__inner">
 						<?php
@@ -76,8 +87,8 @@ if($_SESSION['uRole'] == "admin"){
 							$isBlocked = $row['isBlocked'];
 							?>
 							<div class="mdc-layout-grid__cell--span-3">
-								<div class="mdc-card demo-card">
-									<div class="mdc-card__primary-action demo-card__primary-action contentCard" tabindex="0">
+								<div class="mdc-card demo-card" style="margin-bottom: 30px!important">
+									<div class="mdc-card__primary-action demo-card__primary-action contentCard" tabindex="0" >
 										<div class="mdc-card__media mdc-card__media--8-3 demo-card__media userProfilePic">
 											<img src="../user/<?php echo $uProfilePic; ?>" width="150px" height="150px">
 										</div>

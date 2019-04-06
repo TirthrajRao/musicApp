@@ -22,18 +22,21 @@ if(isset($_POST["submit"]))
 
 			$user_role = $row['role'];
 			$uId = $row['uId'];
+			$status = $row['isBlocked'];
 			
 		}
-		if($user_role=="user"){
+		if($user_role=="user" && $status==0){
 			$_SESSION['uRole'] = "user";
 			$_SESSION['uEmail'] = $email;
 			$_SESSION['uId'] = $uId;
 			header("location:index.php"); 
-		} else if ($user_role=="admin") {
+		} else if ($user_role=="admin" && $status==0) {
 			$_SESSION['uRole'] = "admin";
 			$_SESSION['uEmail'] = $email;
 			$_SESSION['uId'] = $uId;
 			header("location:../admin/dashboard.php");
+		}else if($status == 1){
+			echo '<script>alert("Your account has been suspended by admin!")</script>';
 		} 
 		else  
 		{  

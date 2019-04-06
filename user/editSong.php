@@ -118,9 +118,17 @@ if(isset($_GET['deleteSong'])){
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
 					<span class="mdc-list-item__text">Add Songs</span>
 				</a>
+				<a class="mdc-list-item" href="playlist.php">
+					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
+					<span class="mdc-list-item__text">My Playlist</span>
+				</a>
 				<a class="mdc-list-item" href="mySongs.php">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
 					<span class="mdc-list-item__text">My Songs</span>
+				</a>
+				<a class="mdc-list-item" href="myProfile.php">
+					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
+					<span class="mdc-list-item__text">Profile</span>
 				</a>
 				<a class="mdc-list-item" href="logout.php">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>

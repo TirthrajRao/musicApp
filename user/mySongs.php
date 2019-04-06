@@ -1,6 +1,6 @@
 <?php
 session_start();
-if($_SESSION['uRole'] == "user"){
+if($_SESSION['uRole'] == "user"	){
 }
 else {
 	header("location: login.php");
@@ -11,6 +11,10 @@ else {
 include "db.php";
 if(isset($_GET['deleteSong'])){
 	$the_song_id = $_GET['deleteSong'];
+
+	$query = "DELETE FROM catSongs WHERE sId = {$the_song_id}";
+	$delete_query = mysqli_query($con, $query) or die("Delete Error!" . mysqli_error($con));
+	header("Location: mySongs.php");
 
 	$query = "DELETE FROM songs WHERE sId = {$the_song_id}";
 	$delete_query = mysqli_query($con, $query) or die("Delete Error!" . mysqli_error($con));
@@ -43,9 +47,17 @@ if(isset($_GET['deleteSong'])){
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
 					<span class="mdc-list-item__text">Add Songs</span>
 				</a>
+				<a class="mdc-list-item" href="playlist.php">
+					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
+					<span class="mdc-list-item__text">My Playlist</span>
+				</a>
 				<a class="mdc-list-item" href="mySongs.php">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
 					<span class="mdc-list-item__text">My Songs</span>
+				</a>
+				<a class="mdc-list-item" href="myProfile.php">
+					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
+					<span class="mdc-list-item__text">Profile</span>
 				</a>
 				<a class="mdc-list-item" href="logout.php">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
@@ -96,11 +108,40 @@ if(isset($_GET['deleteSong'])){
 												<?php
 												echo "<a href='mySongs.php?deleteSong=$sId' onClick=\"javascript: return confirm('Are you sure you want to delete?');\"><button class='mdc-button mdc-card__action mdc-card__action--button blockButton ' style='background-color:#fb535b!important;'>Delete</button></a>";
 												?>
+												<?php
+												echo "<a href='addSongToPlaylist.php?addToPlaylist=$sId'><button class='mdc-button mdc-card__action mdc-card__action--button blockButton ' style='background-color:black!important;font-size:10px'>Add to playlist</button></a>";
+												?>
 												<img src="../admin/<?php echo $sImage; ?>" width="150px" height="150px">
 											</div>
 											<div class="demo-card__primary">
 												<h2 class="demo-card__title mdc-typography mdc-typography--headline6"><?php echo $sTitle . " " . "by " . $sArtist ;?></h2>
 												<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2">Source:  <?php echo $sSource; ?></h3>
+												<?php 
+												$query = "SELECT * FROM playlistSong WHERE sId = $sId";
+												$select_song_category= mysqli_query($con,$query);
+												$checkrows=mysqli_num_rows($select_song_category);
+
+												if($checkrows == 0){
+													?>
+
+													<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2"><span id="spanHeading">Playlist:</span> None</h3>
+													<?php
+												}else{
+													while($row = mysqli_fetch_assoc($select_song_category)){
+														$pId = $row['pId'];
+
+														$query = "SELECT * FROM playlist WHERE pId = $pId";
+														$select_song_category_name= mysqli_query($con,$query);
+														while($row = mysqli_fetch_assoc($select_song_category_name)){
+															$pName = $row['pName'];
+															?>
+
+															<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2"><span id="spanHeading">Playlist:</span> <?php echo $pName; ?></h3>
+															<?php
+														}
+													}
+												}
+												?>
 											</div>
 											<div class="demo-card__secondary mdc-typography mdc-typography--body2">
 												Description: <?php echo $sDescription; ?>
