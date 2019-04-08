@@ -33,6 +33,7 @@ if(isset($_GET['addToCategory'])){
 	<link rel="stylesheet" type="text/css" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="./css/style.css">
+	<link rel="stylesheet" type="text/css" href="../user/css/searchBox.css">
 	<style type="text/css">
 		.mdc-layout-grid{
 			padding-left: 0px;
@@ -46,53 +47,39 @@ if(isset($_GET['addToCategory'])){
 
 <body>
 
-	<aside class="mdc-drawer mdc-drawer--modal">
-		<div class="mdc-drawer__content">
-			<nav class="mdc-list">
-				<a class="mdc-list-item mdc-list-item--activated" href="dashboard.php" aria-selected="true">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">inbox</i>
-					<span class="mdc-list-item__text">Dashboard</span>
-				</a>
-				<a class="mdc-list-item" href="addSong.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
-					<span class="mdc-list-item__text">Add Songs</span>
-				</a>
-				<a class="mdc-list-item" href="category.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
-					<span class="mdc-list-item__text">Category</span>
-				</a>
-				<a class="mdc-list-item" href="allUsers.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
-					<span class="mdc-list-item__text">All Users</span>
-				</a>
-				<a class="mdc-list-item" href="allSongs.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
-					<span class="mdc-list-item__text">All Songs</span>
-				</a>
-				<a class="mdc-list-item" href="logout.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
-					<span class="mdc-list-item__text">Log Out</span>
-				</a>
-			</nav>
-		</div>
-	</aside>
+	<?php include "header.php"; ?>
+	
 	<div class="mdc-drawer-scrim"></div>
 	<div class="mdc-drawer-app-content">
-		<header class="mdc-top-app-bar app-bar" id="app-bar">
-			<div class="mdc-top-app-bar__row">
-				<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-					<a href="#" class="demo-menu material-icons mdc-top-app-bar__navigation-icon">menu</a>
-					<span class="mdc-top-app-bar__title">Signal Play</span>
-				</section>
-			</div>
-		</header>
+		<?php include "navbar.php";  ?>
 		<main class="main-content" id="main-content" style="margin-top: 50px;">
 			<div class="mdc-top-app-bar--fixed-adjust">
 				<h1>All Songs</h1>
 				<div class="mdc-layout-grid">
 					<div class="mdc-layout-grid__inner">
 						<?php
-						$query = "SELECT * FROM songs";
+						include "getAudioDuration.php";
+						$p =3;
+						$coun=mysqli_query($con,"select count(*) as cou from songs");
+						$coun_row=mysqli_fetch_array($coun);
+						$tot=$coun_row['cou'];
+	//echo $tot;
+						$page=ceil($tot/$p);	
+	//echo $page;
+
+
+						if(isset($_GET['k']))
+						{
+							$page_coun=$_GET['k'];
+						}
+						else
+						{
+							$page_coun=1;
+						}
+
+						$k=($page_coun-1)*$p;
+
+						$query = "SELECT * FROM songs LIMIT $k,$p";
 						$select_songs= mysqli_query($con,$query);
 						while($row = mysqli_fetch_assoc($select_songs)){
 							$sId = $row['sId'];
@@ -105,7 +92,11 @@ if(isset($_GET['addToCategory'])){
 							$sDescription = $row['sDescription'];
 							$sDuration = $row['sDuration'];
 
+							$mp3file = new MP3File($sSong);
+							$duration1 = $mp3file->getDurationEstimate();
+							$duration2 = $mp3file->getDuration();
 							
+
 							?>
 
 							<div class="mdc-layout-grid__cell--span-4">
@@ -131,10 +122,10 @@ if(isset($_GET['addToCategory'])){
 											$checkrows=mysqli_num_rows($select_song_category);
 
 											if($checkrows == 0){
-														?>
+												?>
 
-														<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2"><span id="spanHeading">Category:</span> None</h3>
-														<?php
+												<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2"><span id="spanHeading">Category:</span> None</h3>
+												<?php
 											}else{
 												while($row = mysqli_fetch_assoc($select_song_category)){
 													$cId = $row['cId'];
@@ -146,6 +137,7 @@ if(isset($_GET['addToCategory'])){
 														?>
 
 														<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2"><span id="spanHeading">Category:</span> <?php echo $cName; ?></h3>
+														<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2"><span id="spanHeading">Duration:</span> <?php echo MP3File::formatTime($duration2)."\n"; ; ?></h3>
 														<?php
 													}
 												}
@@ -173,6 +165,14 @@ if(isset($_GET['addToCategory'])){
 						</div>
 					</div>
 				</div>
+				<center style="background-color: red;">
+					<?php
+					for($i=1;$i<=$page;$i++)
+					{
+						echo '<a href="allSongs.php?k='.$i.'" style="margin-right:5px;color:white">'.$i.'</a>';
+					}
+					?>
+				</center>
 
 				<!-- modal category ************** -->
 

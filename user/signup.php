@@ -26,7 +26,7 @@ if(isset($_POST['submit'])){
 	}else if ($checkrows > 0) {
 		echo "<script>alert('User already exists, pls login!')</script>";
 	}else{
-		mysqli_query($con,"INSERT INTO `users`(`uFirstName`, `uLastName`, `uDisplayName`, `uEmail`, `uPassword`, `uProfilePic`) VALUES ('$firstname','$lastname','displayname','$email','$password','$name')") or die(mysqli_error());
+		mysqli_query($con,"INSERT INTO `users`(`uFirstName`, `uLastName`, `uDisplayName`, `uEmail`, `uPassword`, `uProfilePic`,`token`) VALUES ('$firstname','$lastname','displayname','$email','$password','$name','')") or die(mysqli_error());
 		echo "<script>alert('Registered Successfully!')
 		
 		</script>";

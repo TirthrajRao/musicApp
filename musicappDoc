@@ -134,7 +134,7 @@ Screens
 
 		.	Search user
 			.	Name 
-			.	ID
+			.	Id
 		.	Single user page	
 		.	Ban / block user
 		.	List of all songs uploaded by user 

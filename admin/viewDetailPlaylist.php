@@ -1,25 +1,24 @@
 <?php
+session_start();
 error_reporting(-1);
 ini_set('display_errors', 'On');
-session_start();
-if($_SESSION['uRole'] == "user"	){
+if($_SESSION['uRole'] == "admin"){
+}else{
+	header("location: ../user/login.php");
 }
-else {
-	header("location: login.php");
-}
+?>
 
-require "db.php";
+<?php
 if(isset($_GET['playlistDetail'])){
-	$playlistId = $_GET['playlistDetail'];
+	$the_playlist_id= $_GET['playlistDetail'];
 }
-
-$query = "SELECT * FROM playlist WHERE pId=$playlistId";
+include "db.php";
+$query = "SELECT * FROM playlist WHERE pId=$the_playlist_id";
 $playlist= mysqli_query($con,$query);
 while($row = mysqli_fetch_assoc($playlist)){
 	$pName = $row['pName'];
 }
 ?>
-
 
 <!DOCTYPE html>
 <html>
@@ -29,9 +28,13 @@ while($row = mysqli_fetch_assoc($playlist)){
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="../admin/css/style.css">
-	<link rel="stylesheet" type="text/css" href="css/searchBox.css">
+	<link rel="stylesheet" href="./css/style.css">
+	<link rel="stylesheet" type="text/css" href="../user/css/searchBox.css">
 	<style type="text/css">
+		.mdc-layout-grid{
+			padding-left: 0px;
+		}
+
 		#playlist,audio{background:#55CAF5;width:400px;padding:20px;}
 		#playlist{margin-top:-2px;}
 		.active a{color:#5DB0E6;}
@@ -39,24 +42,21 @@ while($row = mysqli_fetch_assoc($playlist)){
 		li a{color:#eeeedd;background:#333;padding:5px;display:block;text-decoration:none;}
 		li a:hover{color:#5DB0E6;}
 	</style>
-
 </head>
+
 <body>
 
-
-	<?php
-	include "header.php";
-	?>
-
+	<?php include "header.php"; ?>
+	
 	<div class="mdc-drawer-scrim"></div>
 	<div class="mdc-drawer-app-content">
-		<?php include "navbar.php"; ?>
-		<main class="main-content" id="main-content">
+		<?php include "navbar.php";  ?>
+		<main class="main-content" id="main-content" style="margin-top: 50px;">
 			<div class="mdc-top-app-bar--fixed-adjust">
 				<!-- main section ******************* -->
 				<h2>Playlist: <?php echo $pName;  ?></h2>
 				<?php
-				$query = "SELECT * FROM playlistSong WHERE pId=$playlistId LIMIT 1";
+				$query = "SELECT * FROM playlistSong WHERE pId=$the_playlist_id LIMIT 1";
 				$select_song_id= mysqli_query($con,$query);
 				while($row = mysqli_fetch_assoc($select_song_id)){
 					$song_id = $row['sId'];
@@ -79,7 +79,7 @@ while($row = mysqli_fetch_assoc($playlist)){
 						<ul id="playlist">
 							<?php
 
-							$query = "SELECT * FROM playlistSong WHERE pId=$playlistId";
+							$query = "SELECT * FROM playlistSong WHERE pId=$the_playlist_id";
 							$select_song_id= mysqli_query($con,$query);
 							while($row = mysqli_fetch_assoc($select_song_id)){
 								$song_id = $row['sId'];
@@ -112,11 +112,12 @@ while($row = mysqli_fetch_assoc($playlist)){
 				</div>
 			</main>
 		</div>
+
 		<script type="text/javascript" src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 		<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 
-
 		<script type="text/javascript">
+
 			var audio;
 			var playlist;
 			var tracks;
@@ -174,3 +175,4 @@ while($row = mysqli_fetch_assoc($playlist)){
 		</script>
 	</body>
 	</html>
+

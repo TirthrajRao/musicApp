@@ -17,6 +17,7 @@ if($_SESSION['uRole'] == "admin"){
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="./css/style.css">
 	<link rel="stylesheet" href="./css/table.css">
+	<link rel="stylesheet" type="text/css" href="../user/css/searchBox.css">
 	<style type="text/css">
 		.mdc-layout-grid{
 			padding-left: 0px;
@@ -30,46 +31,12 @@ if($_SESSION['uRole'] == "admin"){
 
 <body>
 
-	<aside class="mdc-drawer mdc-drawer--modal">
-		<div class="mdc-drawer__content">
-			<nav class="mdc-list">
-				<a class="mdc-list-item mdc-list-item--activated" href="dashboard.php" aria-selected="true">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">inbox</i>
-					<span class="mdc-list-item__text">Dashboard</span>
-				</a>
-				<a class="mdc-list-item" href="addSong.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
-					<span class="mdc-list-item__text">Add Songs</span>
-				</a>
-				<a class="mdc-list-item" href="category.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
-					<span class="mdc-list-item__text">Category</span>
-				</a>
-				<a class="mdc-list-item" href="allUsers.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
-					<span class="mdc-list-item__text">All Users</span>
-				</a>
-				<a class="mdc-list-item" href="allSongs.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
-					<span class="mdc-list-item__text">All Songs</span>
-				</a>
-				<a class="mdc-list-item" href="logout.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
-					<span class="mdc-list-item__text">Log Out</span>
-				</a>
-			</nav>
-		</div>
-	</aside>
+	<?php include "header.php"; ?>
+	
+
 	<div class="mdc-drawer-scrim"></div>
 	<div class="mdc-drawer-app-content">
-		<header class="mdc-top-app-bar app-bar" id="app-bar">
-			<div class="mdc-top-app-bar__row">
-				<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-					<a href="#" class="demo-menu material-icons mdc-top-app-bar__navigation-icon">menu</a>
-					<span class="mdc-top-app-bar__title">Signal Play</span>
-				</section>
-			</div>
-		</header>
+		<?php include "navbar.php";  ?>
 		<main class="main-content" id="main-content" style="margin-top: 50px;">
 			<div class="mdc-top-app-bar--fixed-adjust">
 				<table>
@@ -113,8 +80,7 @@ if($_SESSION['uRole'] == "admin"){
 						<tr>
 							<th scope="col">Song Image</th>
 							<th scope="col">Title</th>
-							<th scope="col">Artist</th>
-							<th scope="col">Source</th>
+							<th scope="col">Song</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -126,15 +92,54 @@ if($_SESSION['uRole'] == "admin"){
 							$sTitle = $row['sTitle'];
 							$sImage = $row['sImage'];
 							$sArtist = $row['sArtist'];
-							$sSource = $row['sSource'];
+							$sSong = $row['sSong'];
 							?>
 							<tr>
 								<td data-label="Account"><img src="<?php echo $sImage; ?>" height="50" width="50" style="border-radius:50%"></td>
 								<td data-label="Due Date"><?php echo $sTitle; ?></td>
-								<td data-label="Amount"><?php echo $sArtist; ?></td>
-								<td data-label="Period"><?php echo $sSource; ?></td>
+								<td data-label="Period"><audio controls style="padding-right: 5px;width: 250px">
+									<source id="audioSTARTMP3" src="<?php echo $sSong; ?>" type="audio/mpeg">
+									</audio>
+								</td>
 							</tr>
 							<?php
+						}
+						?>
+					</tbody>
+				</table>
+
+				<table>
+					<caption>Recently Created Playlist (<a href="allPlaylist.php" style="color: red;">View All</a>)</caption>
+					<thead>
+						<tr>
+							<th scope="col">Playlist Name</th>
+							<th scope="col">Creator</th>
+							<th scope="col">Playlist Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+						$query = "SELECT * FROM playlist ORDER BY pId DESC LIMIT 5";
+						$select_playlist= mysqli_query($con,$query);
+						while($row = mysqli_fetch_assoc($select_playlist)){
+							$pId = $row['pId'];
+							$uId = $row['uId'];
+							$pName = $row['pName'];
+							$pDescription = $row['pDescription'];
+
+							$query1 = "SELECT * FROM users WHERE uId = $uId";
+							$select_user= mysqli_query($con,$query1);
+							while($row1 = mysqli_fetch_assoc($select_user)){
+								$uFirstName = $row1['uFirstName'];
+								$uLastName = $row1['uLastName'];
+								?>
+								<tr>
+									<td data-label="Account"><?php echo $pName; ?></td>
+									<td data-label="Due Date"><?php echo $uFirstName . " " .  $uLastName;?></td>
+									<td data-label="Period"><?php echo $pDescription; ?></td>
+								</tr>
+								<?php
+							}
 						}
 						?>
 					</tbody>

@@ -31,60 +31,47 @@ if(isset($_GET['deleteSong'])){
 	<link rel="stylesheet" type="text/css" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="../admin/css/style.css">
-	
+	<link rel="stylesheet" type="text/css" href="css/searchBox.css">
 </head>
 <body>
 
 
-	<aside class="mdc-drawer mdc-drawer--modal">
-		<div class="mdc-drawer__content">
-			<nav class="mdc-list">
-				<a class="mdc-list-item mdc-list-item--activated" href="index.php" aria-selected="true">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">inbox</i>
-					<span class="mdc-list-item__text">Home</span>
-				</a>
-				<a class="mdc-list-item" href="addSong.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
-					<span class="mdc-list-item__text">Add Songs</span>
-				</a>
-				<a class="mdc-list-item" href="playlist.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
-					<span class="mdc-list-item__text">My Playlist</span>
-				</a>
-				<a class="mdc-list-item" href="mySongs.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
-					<span class="mdc-list-item__text">My Songs</span>
-				</a>
-				<a class="mdc-list-item" href="myProfile.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
-					<span class="mdc-list-item__text">Profile</span>
-				</a>
-				<a class="mdc-list-item" href="logout.php">
-					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
-					<span class="mdc-list-item__text">Log Out</span>
-				</a>
-			</nav>
-		</div>
-	</aside>
+	<?php
+	include "header.php";
+	?>
+	
 	<div class="mdc-drawer-scrim"></div>
 	<div class="mdc-drawer-app-content">
-		<header class="mdc-top-app-bar app-bar" style="background-color: #0b0b0b" id="app-bar">
-			<div class="mdc-top-app-bar__row">
-				<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-					<a href="#" class="demo-menu material-icons mdc-top-app-bar__navigation-icon">menu</a>
-					<span class="mdc-top-app-bar__title">Welcome <?php echo $_SESSION['uEmail']; ?></span>
-				</section>
-			</div>
-		</header>
+		<?php include "navbar.php"; ?>
 		<main class="main-content" id="main-content">
 			<div class="mdc-top-app-bar--fixed-adjust">
 				<h1>My Songs</h1>
 				<div class="mdc-layout-grid">
 					<div class="mdc-layout-grid__inner">
 						<?php
-						
+						$p = 10;
+						$coun=mysqli_query($con,"select count(*) as cou from songs");
+						$coun_row=mysqli_fetch_array($coun);
+						$tot=$coun_row['cou'];
+	//echo $tot;
+						$page=ceil($tot/$p);	
+	//echo $page;
+
+
+						if(isset($_GET['k']))
+						{
+							$page_coun=$_GET['k'];
+						}
+						else
+						{
+							$page_coun=1;
+						}
+
+						$k=($page_coun-1)*$p;
+
+
 						$uId = $_SESSION['uId'];
-						$query = "SELECT * FROM songs WHERE uId = '$uId'";
+						$query = "SELECT * FROM songs WHERE uId = '$uId' LIMIT $k,$p";
 						$select_songs= mysqli_query($con,$query);
 						$rowcount=mysqli_num_rows($select_songs);
 						if ($rowcount != 0) {
@@ -174,6 +161,14 @@ if(isset($_GET['deleteSong'])){
 							?>
 						</div>
 					</div>
+					<center style="background-color: red;">
+						<?php
+						for($i=1;$i<=$page;$i++)
+						{
+							echo '<a href="mySongs.php?k='.$i.'" style="margin-right:5px;color:white">'.$i.'</a>';
+						}
+						?>
+					</center>
 				</div>
 			</main>
 		</div>

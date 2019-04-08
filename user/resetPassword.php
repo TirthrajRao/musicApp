@@ -2,65 +2,41 @@
 session_start();
 error_reporting(-1);
 ini_set('display_errors', 'On');
-if($_SESSION['uRole'] == "admin"){
-}else{
-	header("location: ../user/login.php");
+if($_SESSION['uRole'] == "user"){
 }
 ?>
 
 <?php
-if(isset($_GET['editCategory'])){
-	$the_category_id = $_GET['editCategory'];
+if(isset($_GET['resetPass'])){
+	$the_user_id = $_GET['resetPass'];
 }
-
 
 include "db.php";
-$query = "SELECT * FROM category WHERE cId=$the_category_id";
-$select_category= mysqli_query($con,$query);
-while($row = mysqli_fetch_assoc($select_category)){
-	$cName = $row['cName'];
-	$cDescription = $row['cDescription'];
-	$cImage1= $row['cImage'];
-}
-
 
 if(isset($_POST['submit'])){
+	$oldPass = $_POST['oldPass'];
+	$newPass = $_POST['newPass'];
+	$newPassConf = $_POST['newPassConf'];
 
+	$query = "SELECT * FROM users WHERE uId = '$the_user_id'";
+	$select_user= mysqli_query($con,$query);
+	$row = mysqli_fetch_assoc($select_user);	
+	$uPassword = $row['uPassword'];
 
-	$cImage = $_FILES['cImage']['name'];
-	$cName = $_POST['cName'];
-	$cDescription = $_POST['cDescription'];
-
-	$extsAllowed = array( 'jpg', 'jpeg', 'png', 'gif');
-	$extUpload = strtolower( substr( strrchr($_FILES['cImage']['name'], '.') ,1) ) ;
-	
-	if (in_array($extUpload, $extsAllowed) ) { 
-
-		$name1 = "categoryImages/{$_FILES['cImage']['name']}";
-		$result = move_uploaded_file($_FILES['cImage']['tmp_name'], $name1);
-
-		mysqli_query($con,"UPDATE category SET  cImage='$name1', cName='$cName', cDescription='$cDescription' WHERE cId='$the_category_id' ") or die(mysqli_error($con));
-		echo "<script>alert('category updated Successfully!')
-
-		</script>";
-
-		header("Location: category.php");
+	if($oldPass == $uPassword){
+		if($newPass == $newPassConf){
+			mysqli_query($con,"UPDATE users SET uPassword='$newPass' WHERE uId='$the_user_id' ") or die(mysqli_error($con));
+			echo "<script>alert('Password reset successfully!')
+			</script>";
+			echo "<script>window.location.href = 'myProfile.php';
+			</script>";
+		}else{
+			echo "<script>alert('Password and Confirm password are not same!')</script>";	
+		}
 	}else{
-
-		$name1 = "$cImage1";
-		echo $name1;
-		$result = move_uploaded_file($cImage, $name1);
-
-		mysqli_query($con,"UPDATE category SET  cImage='$name1', cName='$cName', cDescription='$cDescription' WHERE cId='$the_category_id' ") or die(mysqli_error($con));
-		echo "<script>alert('category updated Successfully!')
-
-		</script>";
-
-		header("Location: category.php");
+		echo "<script>alert('Old Password is not correct!')</script>";
 	}
-	
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -71,28 +47,25 @@ if(isset($_POST['submit'])){
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="./css/style.css">
-	<link rel="stylesheet" type="text/css" href="../user/css/searchBox.css">
-	<style type="text/css">
-		.mdc-layout-grid{
-			padding-left: 0px;
-		}
-	</style>
+	<link rel="stylesheet" href="../admin/css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/searchBox.css">
 </head>
-
 <body>
 
-	<?php include "header.php"; ?>
-	
+
+	<?php
+	include "header.php";
+	?>
+
 	<div class="mdc-drawer-scrim"></div>
 	<div class="mdc-drawer-app-content">
-		<?php include "navbar.php";  ?>
-		<main class="main-content" id="main-content" style="margin-top: 50px;">
+		<?php include "navbar.php"; ?>
+		<main class="main-content" id="main-content">
 			<div class="mdc-top-app-bar--fixed-adjust">
 				<div class="mdc-layout-grid">
 					<div class="mdc-layout-grid__inner">
 						<div class="mdc-layout-grid__cell--span-12" align="center">
-							<h1>Edit Category</h1>
+							<h1>Reset Your Password</h1>
 						</div>
 					</div>	
 				</div>
@@ -102,7 +75,7 @@ if(isset($_POST['submit'])){
 						<div class="mdc-layout-grid__inner">
 							<div class="mdc-layout-grid__cell--span-12" align="center">
 								<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
-									<input type="text" value="<?php echo $cName; ?>" name="cName" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Category Name">
+									<input type="password"  name="oldPass" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Enter old password">
 									<div class="mdc-notched-outline">
 										<div class="mdc-notched-outline__leading"></div>
 										<div class="mdc-notched-outline__trailing"></div>
@@ -116,7 +89,7 @@ if(isset($_POST['submit'])){
 						<div class="mdc-layout-grid__inner">
 							<div class="mdc-layout-grid__cell--span-12" align="center">
 								<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
-									<input type="text" value="<?php echo $cDescription; ?>" name="cDescription" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Category Description">
+									<input type="password"  name="newPass" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Enter new password">
 									<div class="mdc-notched-outline">
 										<div class="mdc-notched-outline__leading"></div>
 										<div class="mdc-notched-outline__trailing"></div>
@@ -129,33 +102,32 @@ if(isset($_POST['submit'])){
 					<div class="mdc-layout-grid">
 						<div class="mdc-layout-grid__inner">
 							<div class="mdc-layout-grid__cell--span-12" align="center">
-								<img src="<?php echo $cImage1; ?>" height="100px" width="100px" style="border-radius: 50%">
-								Add Image:
 								<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
-									<input type="file" name="cImage" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Song Image" accept="image/*;capture=camera">
+									<input type="password" name="newPassConf" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Confirm your new password">
+									<div class="mdc-notched-outline">
+										<div class="mdc-notched-outline__leading"></div>
+										<div class="mdc-notched-outline__trailing"></div>
+									</div>
 								</div>
 							</div>	
 						</div>
 					</div>
-
 					<div class="mdc-layout-grid">
 						<div class="mdc-layout-grid__inner">
 							<div class="mdc-layout-grid__cell--span-12" align="center">
-								<button type="submit" class="mdc-button mdc-button--raised" name="submit">
-									<span class="mdc-button__label">Edit Song</span>
+								<button type="submit" name="submit" class="mdc-button mdc-dialog__button mdc-dialog__button--default" data-mdc-dialog-action="yes" style="background-color: blue; color: white">
+									<span class="mdc-button__label">Update</span>
 								</button>
-							</div>	
+							</div>
 						</div>
 					</div>
 				</form>
 			</div>
 		</main>
 	</div>
-
 	<script type="text/javascript" src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 
 	<script type="text/javascript">
-
 		const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.getElementById('app-bar'))
 		const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'))
 
