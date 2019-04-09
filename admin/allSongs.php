@@ -100,7 +100,7 @@ if(isset($_GET['addToCategory'])){
 							?>
 
 							<div class="mdc-layout-grid__cell--span-4">
-								<div class="mdc-card demo-card">
+								<div class="mdc-card demo-card" >
 									<div class="mdc-card__primary-action demo-card__primary-action contentCard" tabindex="0">
 										<div class="mdc-card__media mdc-card__media--8-3 demo-card__media userProfilePic">
 											<?php
@@ -112,7 +112,10 @@ if(isset($_GET['addToCategory'])){
 											<img src="<?php echo $sImage; ?>" width="150px" height="150px">
 										</div>
 										<div class="demo-card__primary">
-											<h2 class="demo-card__title mdc-typography mdc-typography--headline6"><?php echo $sTitle . " " . "by " . $sArtist ;?></h2>
+											<?php
+											echo "<h2 class='demo-card__title mdc-typography mdc-typography--headline6'><a href='viewSong.php?songId=$sId'>"; echo $sTitle . " " . "by" . " " . $sArtist; echo "</a>";
+											?>
+
 											<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2"><span id="spanHeading">Source:</span><?php echo $sSource; ?></h3>
 											<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2"><span id="spanHeading">Description:</span> <?php echo $sDescription; ?></h3>
 
@@ -173,95 +176,6 @@ if(isset($_GET['addToCategory'])){
 					}
 					?>
 				</center>
-
-				<!-- modal category ************** -->
-
-				<div class="mdc-dialog"
-				role="alertdialog"
-				aria-modal="true"
-				aria-labelledby="my-dialog-title"
-				aria-describedby="my-dialog-content">
-				<div class="mdc-dialog__container">
-					<form method="POST" enctype="multipart/form-data">
-						<div class="mdc-dialog__surface">
-							<h2 class="mdc-dialog__title" id="my-dialog-title">Add Category
-							</h2>
-							<div class="mdc-dialog__content" id="my-dialog-content">
-								<div class="mdc-layout-grid">
-									<div class="mdc-layout-grid__inner">
-										<div class="mdc-layout-grid__cell--span-12">
-											<div class="mdc-layout-grid">
-												<div class="mdc-layout-grid__inner">
-													<div class="mdc-layout-grid__cell--span-12">
-														<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
-															<input type="text" name="cName" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Category Name">
-															<div class="mdc-notched-outline">
-																<div class="mdc-notched-outline__leading"></div>
-																<div class="mdc-notched-outline__trailing"></div>
-															</div>
-														</div>
-													</div>	
-												</div>
-											</div>
-
-										</div>	
-									</div>
-								</div>
-
-								<div class="mdc-layout-grid">
-									<div class="mdc-layout-grid__inner">
-										<div class="mdc-layout-grid__cell--span-12">
-											<div class="mdc-layout-grid">
-												<div class="mdc-layout-grid__inner">
-													<div class="mdc-layout-grid__cell--span-12">
-														<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
-															<input type="text" name="cDescription" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Category Description">
-															<div class="mdc-notched-outline">
-																<div class="mdc-notched-outline__leading"></div>
-																<div class="mdc-notched-outline__trailing"></div>
-															</div>
-														</div>
-													</div>	
-												</div>
-											</div>
-										</div>	
-									</div>
-								</div>
-
-								<div class="mdc-layout-grid">
-									<div class="mdc-layout-grid__inner">
-										<div class="mdc-layout-grid__cell--span-12">
-											<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
-												<div class="mdc-layout-grid">
-													<div class="mdc-layout-grid__inner">
-														<div class="mdc-layout-grid__cell--span-4" style="margin-top: 10px;">
-															Add Image: 
-														</div>
-														<div class="mdc-layout-grid__cell--span-8">
-															<input type="file" name="cImage" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Song Image" accept="image/*;capture=camera" style="padding-left: 0">
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>	
-									</div>
-								</div>
-							</div>
-							<footer class="mdc-dialog__actions">
-								<button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="no">
-									<span class="mdc-button__label">Cancel</span>
-								</button>
-								<button type="submit" name="submit" class="mdc-button mdc-dialog__button mdc-dialog__button--default" data-mdc-dialog-action="yes">
-									<span class="mdc-button__label">Add</span>
-								</button>
-							</footer>
-						</div>
-					</form>
-				</div>
-				<div class="mdc-dialog__scrim">
-
-				</div>
-			</div>
 			<!-- modal category end ************** -->
 		</main>
 	</div>
@@ -269,7 +183,6 @@ if(isset($_GET['addToCategory'])){
 	<script type="text/javascript" src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 
 	<script type="text/javascript">
-		const dialog = new mdc.dialog.MDCDialog(document.querySelector('.mdc-dialog'));
 
 		document.addEventListener('play', function(e){
 			var audios = document.getElementsByTagName('audio');

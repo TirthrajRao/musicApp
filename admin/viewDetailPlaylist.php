@@ -41,6 +41,9 @@ while($row = mysqli_fetch_assoc($playlist)){
 		li{list-style:none;text-decoration:}
 		li a{color:#eeeedd;background:#333;padding:5px;display:block;text-decoration:none;}
 		li a:hover{color:#5DB0E6;}
+		.last{
+			display: none;
+		}
 	</style>
 </head>
 
@@ -67,7 +70,7 @@ while($row = mysqli_fetch_assoc($playlist)){
 						$song = $row['sSong'];
 
 						?>
-						<audio id="audio" preload="auto" tabindex="0" controls="">
+						<audio id="audio"  preload="auto" tabindex="0" controls="">
 							<source src="../admin/<?php echo $song; ?>">
 								Your Fallback goes here
 							</audio>
@@ -107,6 +110,11 @@ while($row = mysqli_fetch_assoc($playlist)){
 								}
 							}
 							?>
+							<li class="last">
+								<a href="">
+									none
+								</a>
+							</li>
 						</ul>
 					</nav>
 				</div>

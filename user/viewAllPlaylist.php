@@ -15,7 +15,7 @@ if(isset($_GET['fav_uId']) &&  isset($_GET['fav_pId'])){
 	mysqli_query($con,"INSERT INTO favUnfav(uId,pId) VALUES ('$fav_uId','$fav_pId')") or die(mysqli_error($con));
 	echo "<script>alert('Added to favourite!')
 	</script>";
-	echo "<script>window.location.href = 'index.php';
+	echo "<script>window.location.href = 'viewAllPlaylist.php';
 	</script>";
 }
 
@@ -27,7 +27,7 @@ if(isset($_GET['unfav_uId']) &&  isset($_GET['unfav_pId'])){
 	$delete_query = mysqli_query($con, $query) or die("Delete Error!" . mysqli_error($con));
 	echo "<script>alert('Successfully removed from favourite!')
 	</script>";
-	echo "<script>window.location.href = 'index.php';
+	echo "<script>window.location.href = 'viewAllPlaylist.php';
 	</script>";
 }
 
@@ -111,11 +111,11 @@ if(isset($_GET['unfav_uId']) &&  isset($_GET['unfav_pId'])){
 													$checkrows=mysqli_num_rows($select_song_category);
 
 													if($checkrows == 0){
-														echo "<a href='index.php?fav_uId=$uId&fav_pId=$pId' style='margin-left:10px'><i class='material-icons'>
+														echo "<a href='viewAllPlaylist.php?fav_uId=$uId&fav_pId=$pId' style='margin-left:10px'><i class='material-icons'>
 														favorite_border
 														</i></a>";
 													}else{
-														echo "<a href='index.php?unfav_uId=$uId&unfav_pId=$pId' style='margin-left:10px'><i class='material-icons'>
+														echo "<a href='viewAllPlaylist.php?unfav_uId=$uId&unfav_pId=$pId' style='margin-left:10px'><i class='material-icons'>
 														favorite
 														</i></a>";
 													}

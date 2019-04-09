@@ -35,6 +35,9 @@ while($row = mysqli_fetch_assoc($category)){
 		li{list-style:none;text-decoration:}
 		li a{color:#eeeedd;background:#333;padding:5px;display:block;text-decoration:none;}
 		li a:hover{color:#5DB0E6;}
+		.last{
+			display: none;
+		}
 	</style>
 </style>
 </head>
@@ -98,6 +101,11 @@ while($row = mysqli_fetch_assoc($category)){
 								}
 							}
 							?>
+							<li class="last">
+								<a href="">
+									Sample 3
+								</a>
+							</li>
 						</ul>
 					</nav>
 				</div>

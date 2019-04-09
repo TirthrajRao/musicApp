@@ -42,6 +42,9 @@ while($row = mysqli_fetch_assoc($category)){
 		li{list-style:none;text-decoration:}
 		li a{color:#eeeedd;background:#333;padding:5px;display:block;text-decoration:none;}
 		li a:hover{color:#5DB0E6;}
+		.last{
+			display: none;
+		}
 	</style>
 </head>
 <body>
@@ -106,6 +109,11 @@ while($row = mysqli_fetch_assoc($category)){
 								}
 							}
 							?>
+							<li class="last">
+								<a href="">
+									none
+								</a>
+							</li>
 						</ul>
 					</nav>
 				</div>
@@ -127,7 +135,6 @@ while($row = mysqli_fetch_assoc($category)){
 				playlist = $('#playlist');
 				tracks = playlist.find('li a');
 				len = tracks.length - 1;
-				audio[0].volume = .10;
 				audio[0].play();
 				playlist.find('a').click(function(e){
 					e.preventDefault();

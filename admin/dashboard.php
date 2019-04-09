@@ -62,10 +62,10 @@ if($_SESSION['uRole'] == "admin"){
 							$uProfilePic = $row['uProfilePic'];
 							?>
 							<tr>
-								<td data-label="Account"><img src="../user/<?php echo $uProfilePic; ?>" height="50" width="50" style="border-radius:50%"></td>
-								<td data-label="Due Date"><?php echo $uFirstName; ?></td>
-								<td data-label="Amount"><?php echo $uFirstName; ?></td>
-								<td data-label="Period"><?php echo $uFirstName; ?></td>
+								<td data-label="Profile Pic"><img src="../user/<?php echo $uProfilePic; ?>" height="50" width="50" style="border-radius:50%"></td>
+								<td data-label="First Name"><?php echo $uFirstName; ?></td>
+								<td data-label="Last Name"><?php echo $uLastName; ?></td>
+								<td data-label="Email"><?php echo $uEmail; ?></td>
 							</tr>
 							<?php
 						}

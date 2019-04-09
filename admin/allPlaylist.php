@@ -34,6 +34,34 @@ if(isset($_GET['unfav_uId']) &&  isset($_GET['unfav_pId'])){
 	</script>";
 }
 
+if(isset($_POST['submit'])){
+	$pName = $_POST['pName'];
+	$pDescription = $_POST['pDescription'];
+	$uId = $_SESSION['uId'];
+	
+
+	mysqli_query($con,"INSERT INTO playlist(uId, pName, pDescription) VALUES ('$uId', '$pName','$pDescription')") or die(mysqli_error($con));
+	echo "<script>Swal.fire('Hello world!')</script>";
+	echo "<script>alert('Playlist created Successfully!')
+	</script>";
+	echo "<script>window.location.href = 'allPlaylist.php';
+	</script>";
+}
+if(isset($_GET['deletePlaylist'])){
+	$the_playlist_id = $_GET['deletePlaylist'];
+
+	$query1 = "DELETE FROM favUnfav WHERE pId = {$the_playlist_id}";
+	$delete_query1 = mysqli_query($con, $query1) or die("Delete Error!" . mysqli_error($con));
+
+	$query1 = "DELETE FROM playlistSong WHERE pId = {$the_playlist_id}";
+	$delete_query1 = mysqli_query($con, $query1) or die("Delete Error!" . mysqli_error($con));
+
+	$query2 = "DELETE FROM playlist WHERE pId = {$the_playlist_id}";
+	$delete_query2 = mysqli_query($con, $query2) or die("Delete Error!" . mysqli_error($con));
+	header("Location: allPlaylist.php");
+
+}
+
 ?>
 
 
@@ -66,32 +94,118 @@ if(isset($_GET['unfav_uId']) &&  isset($_GET['unfav_pId'])){
 		<?php include "navbar.php";  ?>
 		<main class="main-content" id="main-content" style="margin-top: 50px;">
 			<div class="mdc-top-app-bar--fixed-adjust">
-				<h1>All Playlist</h1>
 				<div class="mdc-layout-grid">
 					<div class="mdc-layout-grid__inner">
-						<?php
-						$p =3;
-						$coun=mysqli_query($con,"select count(*) as cou from playlist");
-						$coun_row=mysqli_fetch_array($coun);
-						$tot=$coun_row['cou'];
+						<div class="mdc-layout-grid__cell--span-12">
+							<button class="mdc-button mdc-button--raised" onCLick="dialog.open()"  style="margin-top: 30px; background-color: black">
+								<span class="mdc-button__label">Add Playlist</span>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="mdc-dialog"
+				role="alertdialog"
+				aria-modal="true"
+				aria-labelledby="my-dialog-title"
+				aria-describedby="my-dialog-content">
+				<div class="mdc-dialog__container">
+					<form method="POST" enctype="multipart/form-data">
+						<div class="mdc-dialog__surface">
+							<h2 class="mdc-dialog__title" id="my-dialog-title">Add Playlist
+							</h2>
+							<div class="mdc-dialog__content" id="my-dialog-content">
+								<div class="mdc-layout-grid">
+									<div class="mdc-layout-grid__inner">
+										<div class="mdc-layout-grid__cell--span-12">
+											<div class="mdc-layout-grid">
+												<div class="mdc-layout-grid__inner">
+													<div class="mdc-layout-grid__cell--span-12">
+														<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
+															<input type="text" name="pName" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Playlist Name">
+															<div class="mdc-notched-outline">
+																<div class="mdc-notched-outline__leading"></div>
+																<div class="mdc-notched-outline__trailing"></div>
+															</div>
+														</div>
+													</div>	
+												</div>
+											</div>
+										</div>	
+									</div>
+								</div>
+
+								<div class="mdc-layout-grid">
+									<div class="mdc-layout-grid__inner">
+										<div class="mdc-layout-grid__cell--span-12">
+											<div class="mdc-layout-grid">
+												<div class="mdc-layout-grid__inner">
+													<div class="mdc-layout-grid__cell--span-12">
+														<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--no-label email">
+															<input type="text" name="pDescription" size="30" class="mdc-text-field__input" aria-label="Label" placeholder="Description... #happy">
+															<div class="mdc-notched-outline">
+																<div class="mdc-notched-outline__leading"></div>
+																<div class="mdc-notched-outline__trailing"></div>
+															</div>
+														</div>
+													</div>	
+												</div>
+											</div>
+										</div>	
+									</div>
+								</div>
+							</div>
+							<footer class="mdc-dialog__actions">
+								<button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="no">
+									<span class="mdc-button__label">Cancel</span>
+								</button>
+								<button type="submit" name="submit" class="mdc-button mdc-dialog__button mdc-dialog__button--default" data-mdc-dialog-action="yes">
+									<span class="mdc-button__label">Add</span>
+								</button>
+							</footer>
+						</div>
+					</form>
+				</div>
+				<div class="mdc-dialog__scrim">
+
+				</div>
+			</div>
+
+			<h1>My Playlist</h1>
+			<?php
+			$the_user_id =$_SESSION['uId'];
+			$p1 =9;
+			$coun=mysqli_query($con,"select count(*) as cou from playlist");
+			$coun_row=mysqli_fetch_array($coun);
+			$tot=$coun_row['cou'];
 	//echo $tot;
-						$page=ceil($tot/$p);	
+			$page=ceil($tot/$p1);	
 	//echo $page;
 
 
-						if(isset($_GET['k']))
-						{
-							$page_coun=$_GET['k'];
-						}
-						else
-						{
-							$page_coun=1;
-						}
+			if(isset($_GET['k1']))
+			{
+				$page_coun=$_GET['k1'];
+			}
+			else
+			{
+				$page_coun=1;
+			}
 
-						$k=($page_coun-1)*$p;
+			$k1=($page_coun-1)*$p1;
 
-						$query = "SELECT * FROM playlist LIMIT $k,$p";
-						$select_playlist= mysqli_query($con,$query);
+			$query = "SELECT * FROM playlist WHERE uId=$the_user_id LIMIT $k1,$p1";
+			$select_playlist= mysqli_query($con,$query);
+			$totalPlaylist = mysqli_num_rows($select_playlist);
+			if($totalPlaylist == 0){
+				echo "<h3>No Playlist!</h3>";
+			}else{
+				?>
+				<div class="mdc-layout-grid">
+					<div class="mdc-layout-grid__inner">
+						<?php
+
+
 						while($row = mysqli_fetch_assoc($select_playlist)){
 							$pId = $row['pId'];
 							$uId = $row['uId'];
@@ -120,6 +234,8 @@ if(isset($_GET['unfav_uId']) &&  isset($_GET['unfav_pId'])){
 											<?php
 											echo "<a href='viewDetailPlaylist.php?playlistDetail=$pId' style='text-decoration: none'><button class='mdc-button mdc-card__action mdc-card__action--button' style='background-color: #fb535b;color:white;margin-right:5px;'>Play <?php ?></button></a>";
 
+											echo "<a href='allPlaylist.php?deletePlaylist=$pId' onClick=\"javascript: return confirm('Are you sure you want to delete?');\"><button class='mdc-button mdc-card__action mdc-card__action--button blockButton ' style='background-color:red!important;'>Delete</button></a>";
+
 											$query = "SELECT * FROM favUnfav WHERE uId=$uId AND pId=$pId";
 											$select_song_category= mysqli_query($con,$query);
 											$checkrows=mysqli_num_rows($select_song_category);
@@ -133,6 +249,7 @@ if(isset($_GET['unfav_uId']) &&  isset($_GET['unfav_pId'])){
 												favorite
 												</i></a>";
 											}
+
 											?>
 										</div>
 									</div>
@@ -140,18 +257,107 @@ if(isset($_GET['unfav_uId']) &&  isset($_GET['unfav_pId'])){
 								<?php
 							}
 						}
-						?>	
-					</div>
+					}
+					?>	
 				</div>
 			</div>
 			<center style="background-color: red;">
 				<?php
 				for($i=1;$i<=$page;$i++)
 				{
-					echo '<a href="allUsers.php?k='.$i.'" style="margin-right:5px;color:white">'.$i.'</a>';
+					echo '<a href="allPlaylist.php?k='.$i.'" style="margin-right:5px;color:white">'.$i.'</a>';
 				}
 				?>
 			</center>
+
+			<h1>All Playlist</h1>
+			<div class="mdc-layout-grid">
+				<div class="mdc-layout-grid__inner">
+					<?php
+					$p =9;
+					$coun=mysqli_query($con,"select count(*) as cou from playlist");
+					$coun_row=mysqli_fetch_array($coun);
+					$tot=$coun_row['cou'];
+	//echo $tot;
+					$page=ceil($tot/$p);	
+	//echo $page;
+
+
+					if(isset($_GET['k']))
+					{
+						$page_coun=$_GET['k'];
+					}
+					else
+					{
+						$page_coun=1;
+					}
+
+					$k=($page_coun-1)*$p;
+
+					$query = "SELECT * FROM playlist LIMIT $k,$p";
+					$select_playlist= mysqli_query($con,$query);
+					while($row = mysqli_fetch_assoc($select_playlist)){
+						$pId = $row['pId'];
+						$uId = $row['uId'];
+						$pName = $row['pName'];
+						$pDescription = $row['pDescription'];
+
+						$query1 = "SELECT * FROM users WHERE uId = $uId";
+						$select_user= mysqli_query($con,$query1);
+						while($row1 = mysqli_fetch_assoc($select_user)){
+							$uFirstName = $row1['uFirstName'];
+							$uLastName = $row1['uLastName'];
+
+							?>
+
+							<div class="mdc-layout-grid__cell--span-4">
+								<div class="mdc-card demo-card">
+									<div class="mdc-card__primary-action demo-card__primary-action contentCard" tabindex="0">
+										<div class="mdc-card__media mdc-card__media--8-3 demo-card__media userProfilePic" style="margin-left: 10px">
+											<?php echo $uFirstName . " " . $uLastName ?><br><br>									
+										</div>
+										<div class="demo-card__secondary mdc-typography mdc-typography--body2" style="margin-left: 10px">
+											<span style="font-weight: bolder;">Name: </span><?php echo $pName ;?>
+										</div>
+									</div>
+									<div class="mdc-card__actions" pull="right">
+										<?php
+										echo "<a href='viewDetailPlaylist.php?playlistDetail=$pId' style='text-decoration: none'><button class='mdc-button mdc-card__action mdc-card__action--button' style='background-color: #fb535b;color:white;margin-right:5px;'>Play <?php ?></button></a>";
+
+										$query = "SELECT * FROM favUnfav WHERE uId=$uId AND pId=$pId";
+										$select_song_category= mysqli_query($con,$query);
+										$checkrows=mysqli_num_rows($select_song_category);
+
+										if($checkrows == 0){
+											echo "<a href='allPlaylist.php?fav_uId=$uId&fav_pId=$pId' style='margin-left:10px'><i class='material-icons'>
+											favorite_border
+											</i></a>";
+										}else{
+											echo "<a href='allPlaylist.php?unfav_uId=$uId&unfav_pId=$pId' style='margin-left:10px'><i class='material-icons'>
+											favorite
+											</i></a>";
+										}
+										?>
+									</div>
+								</div>
+							</div>
+							<?php
+						}
+					}
+					?>	
+				</div>
+			</div>
+			<center style="background-color: red;">
+				<?php
+				for($i=1;$i<=$page;$i++)
+				{
+					echo '<a href="allPlaylist.php?k='.$i.'" style="margin-right:5px;color:white">'.$i.'</a>';
+				}
+				?>
+			</center>
+
+
+
 
 			<!-- modal category ************** -->
 
@@ -242,7 +448,9 @@ if(isset($_GET['unfav_uId']) &&  isset($_GET['unfav_pId'])){
 			</div>
 		</div>
 		<!-- modal category end ************** -->
-	</main>
+	</div>
+
+</main>
 </div>
 
 <script type="text/javascript" src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>

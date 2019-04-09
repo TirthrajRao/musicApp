@@ -138,17 +138,19 @@ if(isset($_GET['unfav_uId']) &&  isset($_GET['unfav_pId'])){
 					<div class="mdc-layout-grid__inner">
 						<?php
 						$uId = $_SESSION['uId'];
-						$playlist=mysqli_query($con,"SELECT * FROM playlist")  or die(mysqli_error($con));
+						$playlist=mysqli_query($con,"SELECT * FROM playlist LIMIT 3")  or die(mysqli_error($con));
 
 						if(mysqli_num_rows($playlist) > 0){
-							$counter = 0;
 							while($resP = mysqli_fetch_array($playlist)){
 								$pId = $resP['pId'];
 								$pDescription = $resP['pDescription'];
 								$pName = $resP['pName'];
 								$upId = $resP['uId'];
+
+								$getSongCnt=mysqli_query($con,"SELECT * FROM playlistSong WHERE pId = $pId")  or die(mysqli_error($con));
+								$getSongCnt =mysqli_num_rows($getSongCnt);
+
 								$getUserP=mysqli_query($con,"SELECT * FROM users WHERE uId = $upId")  or die(mysqli_error($con));
-								$counter++;
 								if(mysqli_num_rows($getUserP) > 0){
 
 									while($resPu = mysqli_fetch_array($getUserP)){
@@ -159,16 +161,22 @@ if(isset($_GET['unfav_uId']) &&  isset($_GET['unfav_pId'])){
 											<div class="mdc-card demo-card">
 												<div class="mdc-card__primary-action demo-card__primary-action contentCard" tabindex="0">
 													<div class="mdc-card__media mdc-card__media--8-3 demo-card__media userProfilePic" style="margin-left: 10px">
-														(<?php echo $counter; ?>) <?php echo $uFirstName . " " . $uLastName ?><br><br>									
+														<span style="font-weight: bolder;">Name: </span><?php echo "<a href='viewDetailsPlaylist.php?songList=$pId'> $pName </a>";?>
+														<br><br>									
 													</div>
 													<div class="demo-card__secondary mdc-typography mdc-typography--body2" style="margin-left: 10px">
-														<span style="font-weight: bolder;">Name: </span><?php echo $pName ;?>
+														Created by: <?php echo $uFirstName . " " . $uLastName ?><br>
+
+														Total Songs: <?php echo $getSongCnt; ?>
 													</div>
 												</div>
 												<div class="mdc-card__actions" pull="right">
 													<?php
-													echo "<a href='viewDetailsPlaylist.php?playlistDetail=$pId' style='text-decoration: none'><button class='mdc-button mdc-card__action mdc-card__action--button' style='background-color: #fb535b;color:white;margin-right:5px;'>Play <?php ?></button></a>";
-
+													if($getSongCnt !=0){
+														echo "<a href='viewDetailsPlaylist.php?playlistDetail=$pId' style='text-decoration: none'><button class='mdc-button mdc-card__action mdc-card__action--button' style='background-color: #fb535b;color:white;margin-right:5px;'>Play <?php ?></button></a>";
+													}else{
+														echo "<button type='button' class='mdc-button mdc-card__action mdc-card__action--button' style='background-color: #fb535b;color:white;margin-right:5px;' disabled>Play</button>";
+													}
 													
 													if($upId == $_SESSION['uId']){
 														echo "<a href='editPlaylist.php?editPlaylist=$pId' style='text-decoration: none'><button class='mdc-button mdc-card__action mdc-card__action--button' style='background-color: black;color:white;margin-right:5px'>Edit</button></a>";

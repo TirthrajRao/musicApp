@@ -151,7 +151,7 @@ if(isset($_GET['deletePlaylist'])){
 				<div class="mdc-layout-grid__inner">
 					<?php
 					$p =9;
-					$coun=mysqli_query($con,"select count(*) as cou from songs");
+					$coun=mysqli_query($con,"select count(*) as cou from playlist");
 					$coun_row=mysqli_fetch_array($coun);
 					$tot=$coun_row['cou'];
 	//echo $tot;

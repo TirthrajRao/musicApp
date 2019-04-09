@@ -56,8 +56,6 @@ if(isset($_GET['deleteSong'])){
 	//echo $tot;
 						$page=ceil($tot/$p);	
 	//echo $page;
-
-
 						if(isset($_GET['k']))
 						{
 							$page_coun=$_GET['k'];
@@ -101,7 +99,9 @@ if(isset($_GET['deleteSong'])){
 												<img src="../admin/<?php echo $sImage; ?>" width="150px" height="150px">
 											</div>
 											<div class="demo-card__primary">
-												<h2 class="demo-card__title mdc-typography mdc-typography--headline6"><?php echo $sTitle . " " . "by " . $sArtist ;?></h2>
+												<?php
+												echo "<h2 class='demo-card__title mdc-typography mdc-typography--headline6'><a href='viewSong.php?songId=$sId'>"; echo $sTitle . " " . "by" . $sArtist; echo "</a>";
+												?>
 												<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2">Source:  <?php echo $sSource; ?></h3>
 												<?php 
 												$query = "SELECT * FROM playlistSong WHERE sId = $sId";

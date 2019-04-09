@@ -61,8 +61,8 @@ if($_SESSION['uRole'] == "admin"){
 						$k=($page_coun-1)*$p;
 
 
-						$query = "SELECT * FROM users LIMIT $k,$p";
-						$select_users= mysqli_query($con,$query);
+						$query = "SELECT * FROM users ORDER BY uId DESC  LIMIT $k,$p";
+						$select_users= mysqli_query($con,$query) or die(mysql_error($con));
 						while($row = mysqli_fetch_assoc($select_users)){
 							$uId = $row['uId'];
 							$uFirstName = $row['uFirstName'];
